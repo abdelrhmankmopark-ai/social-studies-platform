@@ -19,9 +19,9 @@ import {
 
 // العناصر الأساسية
 const $ = (id) => document.getElementById(id);
-
 const toast = $("toast");
 
+// عرض الرسائل
 function showMessage(message) {
   if (!toast) {
     alert(message);
@@ -36,7 +36,7 @@ function showMessage(message) {
   }, 3500);
 }
 
-// حماية النصوص المعروضة
+// حماية النصوص
 function escapeHTML(value = "") {
   return String(value).replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -47,7 +47,21 @@ function escapeHTML(value = "") {
   })[char]);
 }
 
-// التنقل إلى تسجيل الدخول
+// رسائل أخطاء Firebase
+function getErrorMessage(error) {
+  const messages = {
+    "auth/email-already-in-use": "البريد الإلكتروني مستخدم بالفعل.",
+    "auth/invalid-email": "البريد الإلكتروني غير صحيح.",
+    "auth/weak-password": "كلمة المرور ضعيفة، استخدم 6 أحرف على الأقل.",
+    "auth/invalid-credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "auth/network-request-failed": "تحقق من اتصال الإنترنت.",
+    "auth/too-many-requests": "محاولات كثيرة. حاول مرة أخرى لاحقاً."
+  };
+
+  return messages[error.code] || error.message || "حدث خطأ. حاول مرة أخرى.";
+}
+
+// الانتقال إلى تسجيل الدخول
 function openLogin() {
   $("account")?.scrollIntoView({ behavior: "smooth" });
 }
@@ -61,12 +75,12 @@ $("menuBtn")?.addEventListener("click", () => {
   $("nav")?.classList.toggle("open");
 });
 
-// تبويبات الدخول والتسجيل
-document.querySelectorAll(".tab").forEach(button => {
+// تبديل تسجيل الدخول وإنشاء الحساب
+const tabs = document.querySelectorAll(".tab");
+
+tabs.forEach(button => {
   button.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.classList.remove("active");
-    });
+    tabs.forEach(tab => tab.classList.remove("active"));
 
     button.classList.add("active");
 
@@ -98,8 +112,8 @@ $("registerForm")?.addEventListener("submit", async event => {
     );
 
     await setDoc(doc(db, "users", result.user.uid), {
-      name,
-      email,
+      name: name,
+      email: email,
       role: "student",
       createdAt: serverTimestamp()
     });
@@ -108,7 +122,7 @@ $("registerForm")?.addEventListener("submit", async event => {
     $("registerForm").reset();
 
   } catch (error) {
-    console.error(error);
+    console.error("Register error:", error);
     showMessage(getErrorMessage(error));
   }
 });
@@ -127,23 +141,10 @@ $("loginForm")?.addEventListener("submit", async event => {
     $("loginForm").reset();
 
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     showMessage(getErrorMessage(error));
   }
 });
-
-// رسائل أخطاء Firebase
-function getErrorMessage(error) {
-  const messages = {
-    "auth/email-already-in-use": "البريد الإلكتروني مستخدم بالفعل.",
-    "auth/invalid-email": "البريد الإلكتروني غير صحيح.",
-    "auth/weak-password": "كلمة المرور ضعيفة.",
-    "auth/invalid-credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-    "auth/network-request-failed": "تحقق من اتصال الإنترنت."
-  };
-
-  return messages[error.code] || "حدث خطأ. حاول مرة أخرى.";
-}
 
 // متابعة حالة المستخدم
 onAuthStateChanged(auth, async user => {
@@ -191,7 +192,7 @@ onAuthStateChanged(auth, async user => {
     $("dashboard")?.scrollIntoView({ behavior: "smooth" });
 
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Account loading error:", error);
     showMessage("تعذر تحميل الحساب. تحقق من إعدادات قاعدة البيانات.");
   }
 });
@@ -364,8 +365,8 @@ async function submitQuiz(event, questionsSnapshot) {
     await addDoc(
       collection(db, "users", user.uid, "results"),
       {
-        score,
-        total,
+        score: score,
+        total: total,
         createdAt: serverTimestamp()
       }
     );
@@ -429,11 +430,11 @@ $("lessonForm")?.addEventListener("submit", async event => {
 
   try {
     await addDoc(collection(db, "lessons"), {
-      title,
-      subject,
-      description,
-      video,
-      pdf,
+      title: title,
+      subject: subject,
+      description: description,
+      video: video,
+      pdf: pdf,
       createdAt: serverTimestamp()
     });
 
@@ -465,9 +466,9 @@ $("quizForm")?.addEventListener("submit", async event => {
 
   try {
     await addDoc(collection(db, "questions"), {
-      question,
-      options,
-      correctAnswer,
+      question: question,
+      options: options,
+      correctAnswer: correctAnswer,
       createdAt: serverTimestamp()
     });
 
@@ -518,4 +519,3 @@ async function loadStudents() {
     console.error(error);
     container.textContent = "تعذر تحميل قائمة الطلاب.";
   }
-    
