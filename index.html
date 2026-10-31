@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#123c69">
+  <title>منصة الأستاذ محمد رمضان | الدراسات الاجتماعية</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">م</span><span><b>منصة الأستاذ محمد رمضان</b><small>الدراسات الاجتماعية • الصف الثاني الإعدادي</small></span></a>
+  <button id="menuBtn" class="menu-btn" aria-label="القائمة">☰</button>
+  <nav id="nav">
+    <a href="#home">الرئيسية</a><a href="#lessons">الدروس</a><a href="#exams">الامتحانات</a>
+    <button id="loginNav" class="nav-login">دخول الطلاب</button>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">رحلتك نحو التفوق تبدأ هنا</span>
+    <h1>افهم الدراسات<br><em>واستعد للتفوق</em></h1>
+    <p>منصة تعليمية لطلاب الصف الثاني الإعدادي — الفصل الدراسي الأول. دروس منظمة، اختبارات تفاعلية، ومتابعة لمستواك.</p>
+    <div class="hero-actions"><button class="btn primary" id="heroLogin">ابدأ التعلم</button><a class="btn ghost" href="#lessons">استكشف المحتوى</a></div>
+  </div>
+  <div class="hero-art" aria-hidden="true"><div class="globe">🌍</div><div class="floating f1">📚 دروس منظمة</div><div class="floating f2">🏆 اختبر نفسك</div></div>
+</section>
+
+<section class="stats">
+  <div><b>02</b><span>الصف الدراسي</span></div><div><b>01</b><span>الفصل الدراسي</span></div><div><b>∞</b><span>فرص للتعلم</span></div>
+</section>
+
+<section id="lessons" class="section">
+  <div class="section-heading"><div><span class="eyebrow">تعلم خطوة بخطوة</span><h2>محتوى المنصة</h2></div><p>سجّل الدخول للوصول إلى الدروس والمواد التي يضيفها الأستاذ.</p></div>
+  <div class="feature-grid">
+    <article class="feature"><div class="feature-icon">🗺️</div><h3>شرح الجغرافيا</h3><p>دروس ومواد منظمة لفهم موضوعات الجغرافيا المقررة.</p></article>
+    <article class="feature"><div class="feature-icon">🏺</div><h3>شرح التاريخ</h3><p>تعرف على الأحداث والشخصيات التاريخية بطريقة مبسطة.</p></article>
+    <article class="feature"><div class="feature-icon">📝</div><h3>اختبارات تفاعلية</h3><p>أجب عن الأسئلة واعرف نتيجتك بعد تسليم الاختبار.</p></article>
+    <article class="feature"><div class="feature-icon">📈</div><h3>متابعة المستوى</h3><p>راجع نتائج اختباراتك وتابع تقدمك الدراسي.</p></article>
+  </div>
+</section>
+
+<section id="exams" class="callout"><div><span class="eyebrow">تدرب باستمرار</span><h2>جاهز تختبر معلوماتك؟</h2><p>الاختبارات المتاحة ستظهر داخل حسابك بعد تسجيل الدخول وإضافتها من إدارة المنصة.</p></div><button class="btn light" id="examLogin">دخول الطالب</button></section>
+
+<section id="account" class="section account-section">
+  <div class="section-heading"><div><span class="eyebrow">حسابك الدراسي</span><h2>ادخل إلى منصتك</h2></div></div>
+  <div class="auth-card" id="authCard">
+    <div class="auth-tabs"><button class="tab active" data-tab="login">تسجيل الدخول</button><button class="tab" data-tab="register">إنشاء حساب</button></div>
+    <form id="loginForm" class="auth-form">
+      <label>البريد الإلكتروني<input id="loginEmail" type="email" autocomplete="email" required></label>
+      <label>كلمة المرور<input id="loginPassword" type="password" autocomplete="current-password" required minlength="6"></label>
+      <button class="btn primary full" type="submit">تسجيل الدخول</button>
+    </form>
+    <form id="registerForm" class="auth-form hidden">
+      <label>اسم الطالب<input id="registerName" type="text" autocomplete="name" required maxlength="60"></label>
+      <label>البريد الإلكتروني<input id="registerEmail" type="email" autocomplete="email" required></label>
+      <label>كلمة المرور<input id="registerPassword" type="password" autocomplete="new-password" required minlength="6"></label>
+      <button class="btn primary full" type="submit">إنشاء حساب طالب</button>
+    </form>
+    <p class="form-note">إنشاء الحساب مخصص للطلاب. لا تشارك كلمة المرور مع أي شخص.</p>
+  </div>
+</section>
+
+<section id="dashboard" class="section hidden">
+  <div class="dashboard-head"><div><span class="eyebrow">مساحتك التعليمية</span><h2 id="welcomeTitle">أهلاً بك</h2></div><button id="logoutBtn" class="btn ghost">تسجيل الخروج</button></div>
+  <div id="dashboardContent" class="dashboard-grid"></div>
+</section>
+
+<section id="admin" class="section hidden">
+  <div class="section-heading"><div><span class="eyebrow">إدارة المحتوى</span><h2>لوحة الأستاذ</h2></div></div>
+  <div class="admin-grid">
+    <form id="lessonForm" class="panel">
+      <h3>إضافة درس</h3>
+      <label>عنوان الدرس<input id="lessonTitle" required maxlength="120"></label>
+      <label>القسم<select id="lessonSubject"><option value="جغرافيا">جغرافيا</option><option value="تاريخ">تاريخ</option></select></label>
+      <label>وصف مختصر<textarea id="lessonDescription" rows="3" required maxlength="500"></textarea></label>
+      <label>رابط فيديو (اختياري)<input id="lessonVideo" type="url" placeholder="https://..."></label>
+      <label>رابط ملف PDF (اختياري)<input id="lessonPdf" type="url" placeholder="https://..."></label>
+      <button class="btn primary full">نشر الدرس</button>
+    </form>
+    <form id="quizForm" class="panel">
+      <h3>إضافة سؤال اختبار</h3>
+      <label>السؤال<input id="quizQuestion" required maxlength="300"></label>
+      <label>الاختيار الأول<input id="option0" required></label>
+      <label>الاختيار الثاني<input id="option1" required></label>
+      <label>الاختيار الثالث<input id="option2" required></label>
+      <label>الاختيار الرابع<input id="option3" required></label>
+      <label>الإجابة الصحيحة<select id="correctAnswer"><option value="0">الأول</option><option value="1">الثاني</option><option value="2">الثالث</option><option value="3">الرابع</option></select></label>
+      <button class="btn primary full">إضافة السؤال</button>
+      <small class="muted">الأسئلة المضافة تُعرض في اختبار تدريبي واحد للطلاب.</small>
+    </form>
+  </div>
+  <div class="panel"><h3>الطلاب المسجلون</h3><div id="studentsList" class="students-list">تحميل...</div></div>
+</section>
+</main>
+
+<footer><b>منصة الأستاذ محمد رمضان</b><span>الدراسات الاجتماعية • الصف الثاني الإعدادي • الترم الأول</span><small>المحتوى التعليمي يضاف ويُراجع بواسطة إدارة المنصة.</small></footer>
+<div id="toast" role="status" class="toast" aria-live="polite"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
