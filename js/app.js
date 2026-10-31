@@ -518,4 +518,4 @@ async function loadStudents() {
     console.error(error);
     container.textContent = "تعذر تحميل قائمة الطلاب.";
   }
-      }
+    
