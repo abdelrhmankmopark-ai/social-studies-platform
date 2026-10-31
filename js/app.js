@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
 import {
   collection,
@@ -15,7 +15,7 @@ import {
   getDoc,
   setDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
 // العناصر الأساسية
 const $ = (id) => document.getElementById(id);
@@ -23,6 +23,11 @@ const $ = (id) => document.getElementById(id);
 const toast = $("toast");
 
 function showMessage(message) {
+  if (!toast) {
+    alert(message);
+    return;
+  }
+
   toast.textContent = message;
   toast.classList.add("show");
 
@@ -31,6 +36,7 @@ function showMessage(message) {
   }, 3500);
 }
 
+// حماية النصوص المعروضة
 function escapeHTML(value = "") {
   return String(value).replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -43,16 +49,16 @@ function escapeHTML(value = "") {
 
 // التنقل إلى تسجيل الدخول
 function openLogin() {
-  $("account").scrollIntoView({ behavior: "smooth" });
+  $("account")?.scrollIntoView({ behavior: "smooth" });
 }
 
-$("loginNav").addEventListener("click", openLogin);
-$("heroLogin").addEventListener("click", openLogin);
-$("examLogin").addEventListener("click", openLogin);
+$("loginNav")?.addEventListener("click", openLogin);
+$("heroLogin")?.addEventListener("click", openLogin);
+$("examLogin")?.addEventListener("click", openLogin);
 
 // قائمة الهاتف
-$("menuBtn").addEventListener("click", () => {
-  $("nav").classList.toggle("open");
+$("menuBtn")?.addEventListener("click", () => {
+  $("nav")?.classList.toggle("open");
 });
 
 // تبويبات الدخول والتسجيل
@@ -66,13 +72,13 @@ document.querySelectorAll(".tab").forEach(button => {
 
     const register = button.dataset.tab === "register";
 
-    $("loginForm").classList.toggle("hidden", register);
-    $("registerForm").classList.toggle("hidden", !register);
+    $("loginForm")?.classList.toggle("hidden", register);
+    $("registerForm")?.classList.toggle("hidden", !register);
   });
 });
 
 // إنشاء حساب طالب
-$("registerForm").addEventListener("submit", async event => {
+$("registerForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
   const name = $("registerName").value.trim();
@@ -99,16 +105,16 @@ $("registerForm").addEventListener("submit", async event => {
     });
 
     showMessage("تم إنشاء حسابك بنجاح!");
-
     $("registerForm").reset();
 
   } catch (error) {
+    console.error(error);
     showMessage(getErrorMessage(error));
   }
 });
 
 // تسجيل الدخول
-$("loginForm").addEventListener("submit", async event => {
+$("loginForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
   const email = $("loginEmail").value.trim();
@@ -118,10 +124,10 @@ $("loginForm").addEventListener("submit", async event => {
     await signInWithEmailAndPassword(auth, email, password);
 
     showMessage("تم تسجيل الدخول بنجاح!");
-
     $("loginForm").reset();
 
   } catch (error) {
+    console.error(error);
     showMessage(getErrorMessage(error));
   }
 });
@@ -142,15 +148,15 @@ function getErrorMessage(error) {
 // متابعة حالة المستخدم
 onAuthStateChanged(auth, async user => {
   if (!user) {
-    $("authCard").classList.remove("hidden");
-    $("dashboard").classList.add("hidden");
-    $("admin").classList.add("hidden");
+    $("authCard")?.classList.remove("hidden");
+    $("dashboard")?.classList.add("hidden");
+    $("admin")?.classList.add("hidden");
     return;
   }
 
   try {
     const userRef = doc(db, "users", user.uid);
-    const userSnapshot = await getDoc(userRef);
+    let userSnapshot = await getDoc(userRef);
 
     if (!userSnapshot.exists()) {
       await setDoc(userRef, {
@@ -159,40 +165,46 @@ onAuthStateChanged(auth, async user => {
         role: "student",
         createdAt: serverTimestamp()
       });
+
+      userSnapshot = await getDoc(userRef);
     }
 
-    const userData = (await getDoc(userRef)).data();
+    const userData = userSnapshot.data();
 
-    $("authCard").classList.add("hidden");
-    $("dashboard").classList.remove("hidden");
+    $("authCard")?.classList.add("hidden");
+    $("dashboard")?.classList.remove("hidden");
 
-    $("welcomeTitle").textContent =
-      "أهلاً بك " + (userData.name || "طالبنا");
+    if ($("welcomeTitle")) {
+      $("welcomeTitle").textContent =
+        "أهلاً بك " + (userData.name || "طالبنا");
+    }
 
     if (userData.role === "admin") {
-      $("admin").classList.remove("hidden");
+      $("admin")?.classList.remove("hidden");
       await loadStudents();
     } else {
-      $("admin").classList.add("hidden");
+      $("admin")?.classList.add("hidden");
     }
 
     await loadDashboard();
 
-    $("dashboard").scrollIntoView({ behavior: "smooth" });
+    $("dashboard")?.scrollIntoView({ behavior: "smooth" });
 
   } catch (error) {
+    console.error("Login error:", error);
     showMessage("تعذر تحميل الحساب. تحقق من إعدادات قاعدة البيانات.");
-    console.error(error);
   }
 });
 
 // تسجيل الخروج
-$("logoutBtn").addEventListener("click", async () => {
+$("logoutBtn")?.addEventListener("click", async () => {
   try {
     await signOut(auth);
     showMessage("تم تسجيل الخروج.");
     window.scrollTo({ top: 0, behavior: "smooth" });
+
   } catch (error) {
+    console.error(error);
     showMessage("تعذر تسجيل الخروج.");
   }
 });
@@ -200,6 +212,8 @@ $("logoutBtn").addEventListener("click", async () => {
 // تحميل الدروس والاختبارات
 async function loadDashboard() {
   const container = $("dashboardContent");
+
+  if (!container) return;
 
   container.innerHTML = "<p>جاري تحميل المحتوى...</p>";
 
@@ -296,7 +310,7 @@ async function loadDashboard() {
     container.innerHTML = html;
 
     if (!questionsSnapshot.empty) {
-      $("studentQuiz").addEventListener("submit", event => {
+      $("studentQuiz")?.addEventListener("submit", event => {
         submitQuiz(event, questionsSnapshot);
       });
     }
@@ -304,7 +318,7 @@ async function loadDashboard() {
     await loadResults();
 
   } catch (error) {
-    console.error(error);
+    console.error("Dashboard error:", error);
     container.innerHTML = "<p>حدث خطأ أثناء تحميل المحتوى.</p>";
   }
 }
@@ -369,10 +383,9 @@ async function submitQuiz(event, questionsSnapshot) {
 // عرض نتائج الطالب
 async function loadResults() {
   const user = auth.currentUser;
-
-  if (!user) return;
-
   const container = $("myResults");
+
+  if (!user || !container) return;
 
   try {
     const results = await getDocs(
@@ -405,7 +418,7 @@ async function loadResults() {
 }
 
 // إضافة درس من لوحة الأستاذ
-$("lessonForm").addEventListener("submit", async event => {
+$("lessonForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
   const title = $("lessonTitle").value.trim();
@@ -427,7 +440,6 @@ $("lessonForm").addEventListener("submit", async event => {
     showMessage("تم نشر الدرس بنجاح!");
 
     $("lessonForm").reset();
-
     await loadDashboard();
 
   } catch (error) {
@@ -437,7 +449,7 @@ $("lessonForm").addEventListener("submit", async event => {
 });
 
 // إضافة سؤال اختبار
-$("quizForm").addEventListener("submit", async event => {
+$("quizForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
   const question = $("quizQuestion").value.trim();
@@ -462,7 +474,6 @@ $("quizForm").addEventListener("submit", async event => {
     showMessage("تمت إضافة السؤال!");
 
     $("quizForm").reset();
-
     await loadDashboard();
 
   } catch (error) {
@@ -474,6 +485,8 @@ $("quizForm").addEventListener("submit", async event => {
 // عرض الطلاب للأستاذ
 async function loadStudents() {
   const container = $("studentsList");
+
+  if (!container) return;
 
   try {
     const students = await getDocs(collection(db, "users"));
@@ -505,4 +518,4 @@ async function loadStudents() {
     console.error(error);
     container.textContent = "تعذر تحميل قائمة الطلاب.";
   }
-}
+      }
